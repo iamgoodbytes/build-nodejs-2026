@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import messagesRouter from "./routes/api/v1/messages.js";
 import mongoose from "mongoose";
 import "dotenv/config";
@@ -6,8 +7,7 @@ import "dotenv/config";
 const app = express();
 const port = 3000;
 
-console.log(process.env);
-
+app.use(cors());
 app.use(express.json());
 
 // connect to MongoDB
