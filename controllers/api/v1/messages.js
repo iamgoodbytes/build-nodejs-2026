@@ -18,12 +18,10 @@ export const get = (req, res) => {
 };
 
 export const create = async (req, res) => {
-    console.log(req.body);
-
     try {
         let message = new Message();
-        message.text = req.body.text;
-        message.username = req.body.username;
+        message.text = req.body.message.text;
+        message.username = req.body.message.user;
         await message.save();
 
         const result = {
