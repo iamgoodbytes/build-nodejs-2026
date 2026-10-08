@@ -121,3 +121,61 @@ export const destroy = async (req, res) => {
         });
     }
 };
+
+export const update = async (req, res) => {
+    try {
+        const { text, user } = req.body.message ?? {};
+
+        if (!text && !user) {
+            return res.status(400).json({
+                status: "error",
+                data: {
+                    message: "Provide message.text and/or message.user.",
+                },
+            });
+        }
+
+        const fields = {};
+        if (text) fields.text = text;
+        if (user) fields.username = user;
+
+        const message = await Message.findByIdAndUpdate(req.params.id, fields, {
+            new: true,
+            runValidators: true,
+        });
+
+        if (!message) {
+            return res.status(404).json({
+                status: "error",
+                data: {
+                    message: "Message not found.",
+                },
+            });
+        }
+
+        res.status(200).json({
+            status: "success",
+            data: {
+                message: message,
+            },
+        });
+    } catch (err) {
+        // an id that is not a valid ObjectId cannot match any message
+        if (err.name === "CastError") {
+            return res.status(404).json({
+                status: "error",
+                data: {
+                    message: "Message not found.",
+                },
+            });
+        }
+
+        console.log(err);
+        res.status(500).json({
+            status: "error",
+            data: {
+                message: "Something went wrong.",
+            },
+        });
+    }
+};
